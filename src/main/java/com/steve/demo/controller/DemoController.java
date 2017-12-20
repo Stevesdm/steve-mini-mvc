@@ -26,13 +26,12 @@ public class DemoController {
             HttpServletRequest request,
             HttpServletResponse response,
             @SteveRequestParam("name") String name
-    ){
-        out(response,demoService.queryName(name));
+    ) {
+        out(response, demoService.queryName(name));
     }
 
 
-
-    public void out(HttpServletResponse resp,String str){
+    public void out(HttpServletResponse resp, String str) {
         try {
             resp.getWriter().write(str);
         } catch (IOException e) {

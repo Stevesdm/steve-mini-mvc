@@ -11,7 +11,7 @@ import com.steve.framework.annotation.SteveService;
 @SteveService
 public class DemoServiceImpl implements DemoService {
 
-    public String queryName(String name){
-        return "hello : " + name ;
+    public String queryName(String name) {
+        return "hello : " + name;
     }
 }
