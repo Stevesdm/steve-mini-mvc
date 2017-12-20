@@ -8,6 +8,7 @@ import com.steve.framework.annotation.SteveRequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @Description:
@@ -24,8 +25,18 @@ public class DemoController {
     public void query(
             HttpServletRequest request,
             HttpServletResponse response,
-            @SteveRequestParam String name
+            @SteveRequestParam("name") String name
     ){
-        System.out.println(demoService.queryName(name));
+        out(response,demoService.queryName(name));
+    }
+
+
+
+    public void out(HttpServletResponse resp,String str){
+        try {
+            resp.getWriter().write(str);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
