@@ -80,6 +80,8 @@ public class SteveDispatcherServlet extends HttpServlet {
 
 
     private void doLoadConfig(String location) {
+
+        //获取application.properties配置文件
         InputStream fis = this.getClass().getClassLoader().getResourceAsStream(location);
         try {
             properties.load(fis);
@@ -97,13 +99,16 @@ public class SteveDispatcherServlet extends HttpServlet {
 
     }
 
+    //从配置文件中获取扫描注解的路径
+    //从class目录下找到所有的class文件
     private void doScanner(String packageName) {
-        //从class目录下找到所有的class文件
+        //获取路径，遍历所有class
         URL url = this.getClass().getClassLoader().getResource("/" + packageName.replaceAll("\\.", "/"));
         File dir = new File(url.getFile());
 
         for (File file : dir.listFiles()) {
             if (file.isDirectory()) {
+                //扫描所有，如果包下还有包
                 doScanner(packageName + "." + file.getName());
             } else {
                 String className = packageName + "." + file.getName().replace(".class", "");
@@ -119,22 +124,23 @@ public class SteveDispatcherServlet extends HttpServlet {
 
         try {
             for (String className : classes) {
+
                 Class<?> clazz = Class.forName(className);
                 //判断初始化哪些类
                 if (clazz.isAnnotationPresent(SteveController.class)) {
 
-                    //beanName 默认首字母小写
+                    //controller，beanName 默认首字母小写
                     String beanName = lowerFirstLetter(clazz.getSimpleName());
 
-                    //初始化
+                    //初始化controller
                     ioc.put(beanName, clazz.newInstance());
-
 
                 } else if (clazz.isAnnotationPresent(SteveService.class)) {
 
                     SteveService steveService = clazz.getAnnotation(SteveService.class);
 
-                    //判断serivce是否自己起名字
+                    //判断serivce是否自己起名字，如果有名字十一哦那个配置的名字，如果没有首字母小写
+                    //TODO：beanname不能重复
                     String beanName = steveService.value();
                     if ("".equals(beanName.trim())) {
                         ioc.put(beanName, clazz.newInstance());
@@ -210,15 +216,15 @@ public class SteveDispatcherServlet extends HttpServlet {
                 url = steveRequestMapping.value();
             }
 
-
+            //遍历类下@SteveRequestMapping修饰的方法
             Method[] methods = clazz.getDeclaredMethods();
             for (Method method : methods) {
                 if (!method.isAnnotationPresent(SteveRequestMapping.class)) {
                     continue;
                 }
                 SteveRequestMapping steveRequestMapping = method.getAnnotation(SteveRequestMapping.class);
-                String mUrl = ("/" + url + steveRequestMapping.value()).replaceAll("/+", "/");
 
+                //路径支持正则匹配
                 String regex = ("/" + url + steveRequestMapping.value()).replaceAll("/+", "/");
                 Pattern pattern = Pattern.compile(regex);
                 handlerMapping.add(new Handler(pattern, entry.getValue(), method));

@@ -34,6 +34,7 @@ public class DemoController {
     public void out(HttpServletResponse resp, String str) {
         try {
             resp.getWriter().write(str);
+            resp.getWriter().flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
