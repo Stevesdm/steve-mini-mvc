@@ -117,6 +117,7 @@ public class SteveDispatcherServlet extends HttpServlet {
         }
     }
 
+    //实例化类
     private void doInstance() {
         if (classes.isEmpty()) {
             return;
@@ -165,7 +166,7 @@ public class SteveDispatcherServlet extends HttpServlet {
 
     }
 
-
+    //自动注入
     private void doAutowired() {
         if (ioc.isEmpty()) {
             return;
@@ -196,6 +197,7 @@ public class SteveDispatcherServlet extends HttpServlet {
         }
     }
 
+    //初始化uri映射
     private void initHandleMapping() {
         if (ioc.isEmpty()) {
             return;
@@ -235,6 +237,8 @@ public class SteveDispatcherServlet extends HttpServlet {
         }
     }
 
+
+    //找到uri对应的方法然后反射调用
     private void doDispatch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         try {
 
@@ -314,7 +318,7 @@ public class SteveDispatcherServlet extends HttpServlet {
         return String.valueOf(chars);
     }
 
-
+    //内部类映射方发
     private class Handler {
         protected Object controller;   //保存方法对应实例
         protected Method method;       //保存映射方法
