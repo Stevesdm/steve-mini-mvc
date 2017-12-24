@@ -335,6 +335,7 @@ public class SteveDispatcherServlet extends HttpServlet {
             putParamIndexMapping(method);
         }
 
+        //方法参数顺序
         protected void putParamIndexMapping(Method method) {
             Annotation[][] pa = method.getParameterAnnotations();
             for (int i = 0; i < pa.length; i++) {
